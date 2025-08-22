@@ -11,10 +11,17 @@ ENV WEBAPP_URL=https://cal.kingswindowtint.com
 ENV NEXTAUTH_URL=https://cal.kingswindowtint.com
 ENV CAL_URL=https://cal.kingswindowtint.com
 
+# Set working directory
+WORKDIR /calcom
+
 # Create entrypoint script to handle URL replacement
 RUN echo '#!/bin/sh\n\
-find /app -type f -name "*.js" -o -name "*.html" | xargs sed -i "s|http://localhost:3000|https://cal.kingswindowtint.com|g"\n\
+if [ -d "/app" ]; then\n\
+  find /app -type f -name "*.js" -o -name "*.html" 2>/dev/null | xargs -r sed -i "s|http://localhost:3000|https://cal.kingswindowtint.com|g"\n\
+elif [ -d "/calcom" ]; then\n\
+  find /calcom -type f -name "*.js" -o -name "*.html" 2>/dev/null | xargs -r sed -i "s|http://localhost:3000|https://cal.kingswindowtint.com|g"\n\
+fi\n\
 exec "$@"' > /entrypoint.sh && chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["node", "apps/web/server.js"]
+CMD ["node", "/calcom/apps/web/server.js"]

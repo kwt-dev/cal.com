@@ -51,10 +51,18 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: Dockerfile.simple
+          file: Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NEXT_PUBLIC_WEBAPP_URL=https://cal.kingswindowtint.com
+            NEXT_PUBLIC_API_V2_URL=https://cal.kingswindowtint.com/api/v2
+            NEXT_PUBLIC_LICENSE_CONSENT=agree
+            CALCOM_TELEMETRY_DISABLED=1
+            DATABASE_URL=postgresql://postgres:postgres@postgres:5432/calcom
+            NEXTAUTH_SECRET=your-nextauth-secret-here
+            CALENDSO_ENCRYPTION_KEY=your-encryption-key-here
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
 

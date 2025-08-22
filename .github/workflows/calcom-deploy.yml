@@ -51,27 +51,12 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: Dockerfile
+          file: Dockerfile.simple
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          no-cache: true
-          build-args: |
-            NEXT_PUBLIC_WEBAPP_URL=https://cal.kingswindowtint.com
-            NEXT_PUBLIC_API_V2_URL=https://cal.kingswindowtint.com/api/v2
-            NEXT_PUBLIC_LICENSE_CONSENT=agree
-            CALCOM_TELEMETRY_DISABLED=1
-            NEXT_PUBLIC_IS_E2E=
-            DATABASE_URL=postgresql://postgres:placeholder@postgres:5432/calcom
-            NEXTAUTH_SECRET=placeholder_secret_for_build
-            CALENDSO_ENCRYPTION_KEY=placeholder_key_for_build
-            NEXT_PUBLIC_WEBSITE_URL=https://cal.kingswindowtint.com
-            NEXT_PUBLIC_CONSOLE_URL=https://cal.kingswindowtint.com
-            NEXT_PUBLIC_EMBED_LIB_URL=https://cal.kingswindowtint.com/embed/embed.js
-            NEXT_PUBLIC_COMPANY_NAME=Kings Window Tint
-            NEXT_PUBLIC_APP_NAME=Cal
-            NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS=support@kingswindowtint.com
-            NEXT_PUBLIC_DISABLE_SIGNUP=false
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
 
       - name: Deployment complete
         run: |

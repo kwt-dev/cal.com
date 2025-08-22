@@ -1,0 +1,20 @@
+# Use the official Cal.com image as base
+FROM calcom/cal.com:latest
+
+# Override environment variables at runtime
+ENV NEXT_PUBLIC_WEBAPP_URL=https://cal.kingswindowtint.com
+ENV NEXT_PUBLIC_API_V2_URL=https://cal.kingswindowtint.com/api/v2
+ENV NEXT_PUBLIC_WEBSITE_URL=https://cal.kingswindowtint.com
+ENV NEXT_PUBLIC_CONSOLE_URL=https://cal.kingswindowtint.com
+ENV NEXT_PUBLIC_EMBED_LIB_URL=https://cal.kingswindowtint.com/embed/embed.js
+ENV WEBAPP_URL=https://cal.kingswindowtint.com
+ENV NEXTAUTH_URL=https://cal.kingswindowtint.com
+ENV CAL_URL=https://cal.kingswindowtint.com
+
+# Create entrypoint script to handle URL replacement
+RUN echo '#!/bin/sh\n\
+find /app -type f -name "*.js" -o -name "*.html" | xargs sed -i "s|http://localhost:3000|https://cal.kingswindowtint.com|g"\n\
+exec "$@"' > /entrypoint.sh && chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["node", "apps/web/server.js"]
